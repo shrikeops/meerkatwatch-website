@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F4E4BE">
+<title>Meerkat Watch — coming soon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800&family=Titan+One&display=swap" rel="stylesheet">
+<style>
+  :root{ color-scheme: light; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{
+    min-height:100svh;
+    overflow-x:hidden;
+    display:grid; place-items:center;
+    background: radial-gradient(120% 90% at 50% 28%, #F9EED2 0%, #F4E4BE 55%, #EBD3A0 100%);
+    font-family:'Nunito','Trebuchet MS',sans-serif;
+  }
+
+  /* ---------- ambient scenery ---------- */
+  .sun{
+    position:fixed; top:-14vmin; right:-10vmin; width:56vmin; height:56vmin;
+    border-radius:50%; pointer-events:none; z-index:0;
+    background: radial-gradient(circle, rgba(255,241,199,.95) 0%, rgba(255,241,199,0) 68%);
+    animation: sunPulse 9s ease-in-out infinite;
+  }
+  @keyframes sunPulse{ 0%,100%{ transform:scale(1); opacity:.9 } 50%{ transform:scale(1.05); opacity:1 } }
+
+  .vignette{
+    position:fixed; inset:0; pointer-events:none; z-index:2;
+    background: radial-gradient(120% 100% at 50% 40%, transparent 62%, rgba(146,104,48,.11) 100%);
+  }
+
+  .dunes{
+    position:fixed; left:0; right:0; bottom:0; width:100%;
+    height:clamp(110px, 20svh, 220px); z-index:1; pointer-events:none; display:block;
+  }
+
+  .motes span{
+    position:fixed; width:6px; height:6px; border-radius:50%;
+    background:rgba(186,146,88,.55); filter:blur(1px);
+    z-index:2; pointer-events:none;
+    animation: drift 12s linear infinite;
+  }
+  .motes span:nth-child(1){ left:9%;  top:64%; }
+  .motes span:nth-child(2){ left:23%; top:36%; animation-duration:9s;   animation-delay:-3s; }
+  .motes span:nth-child(3){ left:42%; top:72%; animation-duration:14s;  animation-delay:-6s; }
+  .motes span:nth-child(4){ left:57%; top:28%; animation-duration:10s;  animation-delay:-2s; }
+  .motes span:nth-child(5){ left:71%; top:60%; animation-duration:13s;  animation-delay:-8s; }
+  .motes span:nth-child(6){ left:86%; top:42%; animation-duration:9.5s; animation-delay:-5s; }
+  .motes span:nth-child(7){ left:33%; top:52%; animation-duration:11.5s;animation-delay:-7s; }
+  @keyframes drift{
+    0%{ transform:translate(0,0); opacity:0 }
+    12%{ opacity:.7 } 80%{ opacity:.45 }
+    100%{ transform:translate(80px,-44px); opacity:0 }
+  }
+
+  /* ---------- stage ---------- */
+  .stage{
+    position:relative; z-index:3;
+    display:flex; flex-direction:column; align-items:center;
+    padding:20px 16px 44px; gap:2px;
+    animation: rise .9s cubic-bezier(.22,1,.36,1) both;
+  }
+  @keyframes rise{ from{ opacity:0; transform:translateY(28px) } to{ opacity:1; transform:none } }
+
+  .scene{
+    transform: translate(calc(var(--px,0)*10px), calc(var(--py,0)*6px));
+    transition: transform .55s cubic-bezier(.22,1,.36,1);
+  }
+  .scene svg{
+    display:block;
+    height:min(68svh, 600px); width:auto; max-width:min(92vw, 660px);
+    cursor:pointer;
+  }
+  .scene svg:focus-visible{ outline:3px dashed #B4854A; outline-offset:10px; border-radius:28px; }
+
+  h1{
+    font-family:'Titan One','Arial Rounded MT Bold',sans-serif; font-weight:400;
+    font-size:clamp(2.1rem, 5.6vw, 3.7rem);
+    color:#59371F; margin:4px 0 0; letter-spacing:.02em;
+    text-shadow: 0 2px 0 rgba(255,255,255,.4), 0 12px 26px rgba(140,96,40,.28);
+    animation: rise .9s .12s cubic-bezier(.22,1,.36,1) both;
+  }
+  h1 span{
+    color:#3A4665; display:inline-block;
+    transform:rotate(-2.5deg) translateY(-2px);
+    transition:transform .35s cubic-bezier(.34,1.56,.64,1);
+  }
+  h1:hover span{ transform:rotate(2deg) translateY(-4px) scale(1.05); }
+
+  .soon{
+    margin:2px 0 0; font-weight:800; text-transform:lowercase;
+    color:#8A6238; letter-spacing:.18em;
+    font-size:clamp(.95rem, 2.1vw, 1.22rem);
+    animation: rise .9s .22s cubic-bezier(.22,1,.36,1) both;
+  }
+  .dot{ display:inline-block; animation: hop 1.5s ease-in-out infinite; }
+  .dot:nth-of-type(2){ animation-delay:.18s }
+  .dot:nth-of-type(3){ animation-delay:.36s }
+  @keyframes hop{ 0%,55%,100%{ transform:translateY(0) } 25%{ transform:translateY(-7px) } }
+
+  /* ---------- meerkat: living body ---------- */
+  #meerkat{ transition: transform .45s cubic-bezier(.34,1.56,.64,1); }
+  .scene:hover #meerkat{ transform:translateY(-7px); }
+  #meerkat.boop{ animation: boing .65s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes boing{
+    0%{ transform:none } 30%{ transform:translateY(-16px) rotate(-2deg) }
+    62%{ transform:translateY(-2px) rotate(1.6deg) } 100%{ transform:none }
+  }
+  #shadow{ transition: transform .45s ease, opacity .45s ease; transform-origin:320px 656px; }
+  .scene:hover #shadow{ transform:scale(.93,.88); opacity:.75; }
+
+  #torso{ animation: breathe 4.2s ease-in-out infinite; transform-origin:320px 648px; }
+  @keyframes breathe{ 0%,100%{ transform:scaleY(1) } 50%{ transform:scaleY(1.02) } }
+
+  #tail{ animation: wag 6.5s ease-in-out infinite; transform-origin:356px 612px; }
+  @keyframes wag{ 0%,100%{ transform:rotate(0deg) } 30%{ transform:rotate(4deg) } 65%{ transform:rotate(-3deg) } }
+
+  .grass{ animation: sway 5s ease-in-out infinite; }
+  .g1{ transform-origin:140px 650px; }
+  .g2{ transform-origin:505px 648px; animation-duration:6s; animation-delay:-2.2s; }
+  .dg1{ transform-origin:240px 118px; animation-duration:6.5s; }
+  .dg2{ transform-origin:1080px 112px; animation-duration:5.6s; animation-delay:-3s; }
+  @keyframes sway{ 0%,100%{ transform:rotate(-3deg) } 50%{ transform:rotate(4deg) } }
+
+  /* ---------- the look cycle: right → front (blink) → left → front → … ---------- */
+  .pose{ opacity:0; }
+  .pose-front{ opacity:1; animation: poseFront 12s linear infinite; }
+  .pose-right{ animation: poseRight 12s linear infinite; }
+  .pose-left { animation: poseLeft  12s linear infinite; }
+
+  @keyframes poseFront{
+    0%,8%   { opacity:1; transform:translateX(0); }
+    12%     { opacity:0; transform:translateX(14px); }
+    36%     { opacity:0; transform:translateX(14px); }
+    42%     { opacity:1; transform:translateX(0); }
+    60%     { opacity:1; transform:translateX(0); }
+    64%     { opacity:0; transform:translateX(-14px); }
+    88%     { opacity:0; transform:translateX(-14px); }
+    94%,100%{ opacity:1; transform:translateX(0); }
+  }
+  @keyframes poseRight{
+    0%,8%   { opacity:0; transform:translateX(-14px); }
+    12%     { opacity:1; transform:translateX(0); }
+    22%     { transform:translateX(3px); }
+    32%     { transform:translateX(-4px); }
+    36%     { opacity:1; transform:translateX(-14px); }
+    42%,100%{ opacity:0; transform:translateX(-14px); }
+  }
+  @keyframes poseLeft{
+    0%,60%  { opacity:0; transform:translateX(14px); }
+    64%     { opacity:1; transform:translateX(0); }
+    72%     { transform:translateX(-3px); }
+    82%     { transform:translateX(4px); }
+    88%     { opacity:1; transform:translateX(14px); }
+    94%,100%{ opacity:0; transform:translateX(14px); }
+  }
+
+  /* eyelids slide down only during the face-the-camera windows */
+  .lid{ animation: blink 12s linear infinite; }
+  @keyframes blink{
+    0%,1.5%,5%,46%,51%,100%{ transform:translateY(0); }
+    3%,48.5%               { transform:translateY(76px); }
+  }
+
+  @media (max-height:560px){
+    .scene svg{ height:56svh; }
+    .stage{ padding-bottom:26px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+    .pose{ opacity:0; }
+    .pose-front{ opacity:1; }
+    .scene{ transform:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sun" aria-hidden="true"></div>
+
+<svg class="dunes" viewBox="0 0 1440 230" preserveAspectRatio="none" aria-hidden="true">
+  <path fill="#E8CF9C" d="M0 128 C 210 84 430 150 720 122 C 1010 95 1220 152 1440 116 L 1440 230 L 0 230 Z"/>
+  <g stroke="#B4AB69" stroke-width="6" stroke-linecap="round" fill="none" opacity=".85">
+    <g class="grass dg1">
+      <path d="M240 118 C 236 96 228 82 216 72"/>
+      <path d="M240 118 C 240 92 238 76 244 62"/>
+      <path d="M240 118 C 246 98 254 86 266 78"/>
+    </g>
+    <g class="grass dg2">
+      <path d="M1080 112 C 1076 92 1068 78 1058 70"/>
+      <path d="M1080 112 C 1081 88 1080 74 1086 60"/>
+      <path d="M1080 112 C 1086 94 1094 82 1106 76"/>
+    </g>
+  </g>
+  <path fill="#DFC185" d="M0 178 C 260 138 520 206 820 172 C 1100 141 1290 196 1440 168 L 1440 230 L 0 230 Z"/>
+</svg>
+
+<div class="vignette" aria-hidden="true"></div>
+<div class="motes" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+
+<main class="stage">
+  <div class="scene">
+    <svg id="meerkat-svg" viewBox="0 0 640 700" role="img" tabindex="0"
+         aria-label="A friendly cartoon meerkat standing in the sand, scanning left and right with big binoculars, then looking straight at you and blinking.">
+      <defs>
+        <clipPath id="clipL"><circle cx="272" cy="184" r="30"/></clipPath>
+        <clipPath id="clipR"><circle cx="368" cy="184" r="30"/></clipPath>
+
+        <!-- ===== profile head, drawn facing LEFT (mirrored via <use> for right) ===== -->
+        <g id="side-art">
+          <!-- ear -->
+          <circle cx="392" cy="114" r="21" fill="#D9A463" stroke="#59371F" stroke-width="6"/>
+          <circle cx="390" cy="117" r="10" fill="#9C6238"/>
+
+          <!-- far arm: from the viewer-left shoulder up to the far/front paw (no crossing) -->
+          <path d="M276 336 C 258 302 242 270 230 244" fill="none" stroke="#59371F" stroke-width="40" stroke-linecap="round"/>
+          <path d="M276 336 C 258 302 242 270 230 244" fill="none" stroke="#C08A4C" stroke-width="30" stroke-linecap="round"/>
+
+          <!-- head + snout -->
+          <path d="M388 254 C 414 238 422 202 416 168 C 410 124 374 98 336 102 C 306 105 288 124 282 148 C 278 164 278 176 280 186 L 282 206 C 278 210 272 214 268 220 C 260 230 258 240 266 246 C 276 253 296 250 314 250 C 340 251 366 258 388 254 Z"
+                fill="#D9A463" stroke="#59371F" stroke-width="6" stroke-linejoin="round"/>
+          <path d="M354 100 q 2 -14 12 -8 q 4 -10 12 -2" fill="none" stroke="#59371F" stroke-width="5" stroke-linecap="round"/>
+          <ellipse cx="265" cy="232" rx="8.5" ry="7.5" transform="rotate(-25 265 232)" fill="#3E2716"/>
+          <path d="M264 243 Q 274 249 284 245" fill="none" stroke="#59371F" stroke-width="4" stroke-linecap="round"/>
+          <path d="M262 236 L 244 228 M262 242 L 246 250" stroke="#8A5A33" stroke-width="2.5" stroke-linecap="round" opacity=".85"/>
+
+          <!-- far barrel: recessed at both ends, peeks out below the near barrel only -->
+          <rect x="189" y="172" width="130" height="54" rx="27" fill="#2A3350" stroke="#1B2136" stroke-width="5"/>
+
+          <!-- far paw gripping under the front of the far barrel -->
+          <circle cx="224" cy="236" r="18" fill="#C08A4C" stroke="#59371F" stroke-width="6"/>
+          <path d="M216 228 q 5 7 1 14 M228 226 q 5 7 1 14" fill="none" stroke="#6B4526" stroke-width="3" stroke-linecap="round"/>
+
+          <!-- near barrel + fittings -->
+          <rect x="175" y="156" width="152" height="58" rx="29" fill="#37415C" stroke="#1F2637" stroke-width="6"/>
+          <path d="M200 169 H 296" stroke="#5A6C99" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+          <rect x="252" y="142" width="30" height="16" rx="6" fill="#2C3550" stroke="#1B2136" stroke-width="4"/>
+          <ellipse cx="180" cy="185" rx="15" ry="27" fill="#232B3E" stroke="#161C2B" stroke-width="5"/>
+          <ellipse cx="178" cy="185" rx="9" ry="20" fill="#0F2E3A"/>
+          <ellipse cx="175" cy="176" rx="3.5" ry="7" fill="#9FD3DE" opacity=".75"/>
+          <ellipse cx="326" cy="185" rx="13" ry="25" fill="#232B3E" stroke="#161C2B" stroke-width="5"/>
+
+          <!-- near arm: from the viewer-right shoulder, frontmost, grips near the eyepiece -->
+          <path d="M364 336 C 340 300 316 268 298 244" fill="none" stroke="#59371F" stroke-width="40" stroke-linecap="round"/>
+          <path d="M364 336 C 340 300 316 268 298 244" fill="none" stroke="#D9A463" stroke-width="30" stroke-linecap="round"/>
+          <circle cx="296" cy="238" r="19" fill="#D9A463" stroke="#59371F" stroke-width="6"/>
+          <path d="M288 229 q 5 7 1 14 M300 227 q 5 7 1 14" fill="none" stroke="#6B4526" stroke-width="3" stroke-linecap="round"/>
+        </g>
+      </defs>
+
+      <!-- ===== ground ===== -->
+      <ellipse cx="320" cy="660" rx="235" ry="26" fill="#E7CE9C"/>
+      <g class="grass g1" stroke="#9AA25B" stroke-width="5" stroke-linecap="round" fill="none">
+        <path d="M140 650 C 136 628 130 614 118 602"/>
+        <path d="M140 650 C 140 626 138 608 132 594"/>
+        <path d="M140 650 C 144 628 150 612 160 602"/>
+        <path d="M140 650 C 147 632 155 622 167 616"/>
+      </g>
+      <g class="grass g2" stroke="#9AA25B" stroke-width="5" stroke-linecap="round" fill="none">
+        <path d="M505 648 C 501 628 495 614 485 604"/>
+        <path d="M505 648 C 506 624 505 608 510 596"/>
+        <path d="M505 648 C 510 628 518 616 528 608"/>
+      </g>
+      <ellipse cx="112" cy="654" rx="26" ry="11" fill="#DCC294" stroke="#B49A6C" stroke-width="4"/>
+      <ellipse cx="152" cy="661" rx="12" ry="6" fill="#D8BE8F" stroke="#B49A6C" stroke-width="3.5"/>
+      <ellipse cx="546" cy="652" rx="21" ry="10" fill="#DCC294" stroke="#B49A6C" stroke-width="4"/>
+      <ellipse id="shadow" cx="320" cy="656" rx="142" ry="17" fill="rgba(120,82,38,.28)"/>
+
+      <g id="meerkat">
+        <!-- tail -->
+        <g id="tail">
+          <path d="M354 600 C 415 616 468 616 508 638 C 526 648 526 664 506 663 C 460 659 405 650 348 634 Z"
+                fill="#D9A463" stroke="#59371F" stroke-width="6" stroke-linejoin="round"/>
+          <path d="M470 624 C 484 629 498 636 508 644 C 518 652 516 662 502 660 C 490 658 478 652 468 646 C 468 638 469 631 470 624 Z" fill="#6B4526"/>
+        </g>
+
+        <!-- body (upright, always centred) -->
+        <g id="torso">
+          <path d="M268 250 C 252 330 238 430 242 530 C 245 600 268 646 320 648 C 372 646 395 600 398 530 C 402 430 388 330 372 250 Z"
+                fill="#D9A463" stroke="#59371F" stroke-width="6" stroke-linejoin="round"/>
+          <path d="M320 318 C 292 326 274 376 274 464 C 274 552 294 612 320 616 C 346 612 366 552 366 464 C 366 376 348 326 320 318 Z"
+                fill="#F4E3C0"/>
+          <rect x="244" y="628" width="68" height="30" rx="15" fill="#D9A463" stroke="#59371F" stroke-width="6"/>
+          <rect x="328" y="628" width="68" height="30" rx="15" fill="#D9A463" stroke="#59371F" stroke-width="6"/>
+          <path d="M266 656 v -11 M284 657 v -12 M350 657 v -12 M368 656 v -11"
+                stroke="#59371F" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+        </g>
+
+        <!-- ===== POSE: facing you (eyes visible in the lenses, blinks) ===== -->
+        <g class="pose pose-front">
+          <circle cx="247" cy="110" r="25" fill="#D9A463" stroke="#59371F" stroke-width="6"/>
+          <circle cx="393" cy="110" r="25" fill="#D9A463" stroke="#59371F" stroke-width="6"/>
+          <circle cx="249" cy="112" r="12" fill="#9C6238"/>
+          <circle cx="391" cy="112" r="12" fill="#9C6238"/>
+          <path d="M320 92 C 262 92 228 130 228 185 C 228 240 266 272 320 272 C 374 272 412 240 412 185 C 412 130 378 92 320 92 Z"
+                fill="#D9A463" stroke="#59371F" stroke-width="6"/>
+          <path d="M306 96 q 4 -16 14 -6 q 4 -12 14 -2" fill="none" stroke="#59371F" stroke-width="5" stroke-linecap="round"/>
+          <ellipse cx="258" cy="240" rx="13" ry="8" fill="#E8975F" opacity=".45"/>
+          <ellipse cx="382" cy="240" rx="13" ry="8" fill="#E8975F" opacity=".45"/>
+          <path d="M307 236 Q 320 230 333 236 Q 336 248 320 254 Q 304 248 307 236 Z" fill="#3E2716"/>
+          <path d="M320 254 L 320 259 M303 259 Q 312 268 320 260 Q 328 268 337 259"
+                fill="none" stroke="#59371F" stroke-width="4" stroke-linecap="round"/>
+          <!-- binoculars, front view -->
+          <rect x="312" y="170" width="16" height="30" rx="5" fill="#2C3550"/>
+          <circle cx="272" cy="184" r="46" fill="#37415C" stroke="#1F2637" stroke-width="6"/>
+          <circle cx="368" cy="184" r="46" fill="#37415C" stroke="#1F2637" stroke-width="6"/>
+          <circle cx="272" cy="184" r="35" fill="#232B3E"/>
+          <circle cx="368" cy="184" r="35" fill="#232B3E"/>
+          <circle cx="272" cy="184" r="30" fill="#0E1622"/>
+          <circle cx="368" cy="184" r="30" fill="#0E1622"/>
+          <g clip-path="url(#clipL)">
+            <ellipse cx="272" cy="186" rx="17" ry="19" fill="#FFF6E6"/>
+            <circle cx="272" cy="188" r="9.5" fill="#6E431F"/>
+            <circle cx="272" cy="188" r="4.8" fill="#1D120A"/>
+            <circle cx="268.5" cy="182" r="2.6" fill="#FFFFFF" opacity=".95"/>
+            <g class="lid">
+              <rect x="238" y="54" width="68" height="96" fill="#D9A463"/>
+              <path d="M252 96 Q 272 108 292 96" fill="none" stroke="#6B4526" stroke-width="4" stroke-linecap="round"/>
+            </g>
+          </g>
+          <g clip-path="url(#clipR)">
+            <ellipse cx="368" cy="186" rx="17" ry="19" fill="#FFF6E6"/>
+            <circle cx="368" cy="188" r="9.5" fill="#6E431F"/>
+            <circle cx="368" cy="188" r="4.8" fill="#1D120A"/>
+            <circle cx="364.5" cy="182" r="2.6" fill="#FFFFFF" opacity=".95"/>
+            <g class="lid">
+              <rect x="334" y="54" width="68" height="96" fill="#D9A463"/>
+              <path d="M348 96 Q 368 108 388 96" fill="none" stroke="#6B4526" stroke-width="4" stroke-linecap="round"/>
+            </g>
+          </g>
+          <circle cx="272" cy="184" r="30" fill="none" stroke="#10141F" stroke-width="3"/>
+          <circle cx="368" cy="184" r="30" fill="none" stroke="#10141F" stroke-width="3"/>
+          <path d="M250 166 A 30 30 0 0 1 274 155" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="5" stroke-linecap="round"/>
+          <path d="M388 166 A 30 30 0 0 0 366 155" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="5" stroke-linecap="round"/>
+          <!-- focus wheel, seated in the notch and touching the hinge bridge -->
+          <rect x="306" y="148" width="28" height="26" rx="6" fill="#2C3550" stroke="#1B2136" stroke-width="4"/>
+          <path d="M238 162 A 46 46 0 0 1 272 138" fill="none" stroke="#5A6C99" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+          <path d="M402 162 A 46 46 0 0 0 368 138" fill="none" stroke="#5A6C99" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+          <!-- arms + paws gripping the lenses -->
+          <path d="M276 336 C 246 306 232 262 240 218" fill="none" stroke="#59371F" stroke-width="40" stroke-linecap="round"/>
+          <path d="M276 336 C 246 306 232 262 240 218" fill="none" stroke="#D9A463" stroke-width="30" stroke-linecap="round"/>
+          <path d="M364 336 C 394 306 408 262 400 218" fill="none" stroke="#59371F" stroke-width="40" stroke-linecap="round"/>
+          <path d="M364 336 C 394 306 408 262 400 218" fill="none" stroke="#D9A463" stroke-width="30" stroke-linecap="round"/>
+          <circle cx="236" cy="208" r="23" fill="#D9A463" stroke="#59371F" stroke-width="6"/>
+          <circle cx="404" cy="208" r="23" fill="#D9A463" stroke="#59371F" stroke-width="6"/>
+          <path d="M227 198 q 5 7 1 14 M239 194 q 5 7 1 14 M413 198 q -5 7 -1 14 M401 194 q -5 7 -1 14"
+                fill="none" stroke="#6B4526" stroke-width="3" stroke-linecap="round"/>
+        </g>
+
+        <!-- ===== POSES: profiles (right is the mirrored left) ===== -->
+        <g class="pose pose-right"><use href="#side-art" transform="translate(640 0) scale(-1 1)"/></g>
+        <g class="pose pose-left"><use href="#side-art"/></g>
+      </g>
+    </svg>
+  </div>
+
+  <h1>Meerkat <span>Watch</span></h1>
+  <p class="soon">coming soon<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></p>
+</main>
+
+<script>
+  const svg   = document.getElementById('meerkat-svg');
+  const mk    = document.getElementById('meerkat');
+  const scene = document.querySelector('.scene');
+  const calm  = matchMedia('(prefers-reduced-motion: reduce)');
+
+  const boop = () => {
+    mk.classList.remove('boop');
+    void mk.getBoundingClientRect();      // restart the animation
+    mk.classList.add('boop');
+  };
+  svg.addEventListener('pointerdown', boop);
+  svg.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); boop(); }
+  });
+  mk.addEventListener('animationend', e => {
+    if (e.animationName === 'boing') mk.classList.remove('boop');
+  });
+
+  // gentle scene parallax following the pointer
+  addEventListener('pointermove', e => {
+    if (calm.matches) return;
+    scene.style.setProperty('--px', (e.clientX / innerWidth  - .5).toFixed(3));
+    scene.style.setProperty('--py', (e.clientY / innerHeight - .5).toFixed(3));
+  });
+</script>
+</body>
+</html>

@@ -1,1 +1,3 @@
-# meerkatwatch-website
+# Meerkat Watch Website
+
+More details coming soon...
