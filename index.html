@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#F5F6F7">
-<title>Meerkat Watch — coming soon</title>
+<title>Meerkat Watch: coming soon</title>
 <meta name="description" content="Meerkat Watch monitors what the internet can reach of your organization, the way an attacker would, and proves each finding with steps you can re-run. Coming soon.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CclipPath id='c'%3E%3Ccircle cx='32' cy='32' r='30.2'/%3E%3C/clipPath%3E%3C/defs%3E%3Ccircle cx='32' cy='32' r='31' fill='%23F6C266'/%3E%3Cg clip-path='url(%23c)'%3E%3Ccircle cx='45' cy='25' r='11' fill='%23FBE3A8'/%3E%3Cg transform='translate(5 9) scale(.86)'%3E%3Cpath d='M26.5 13C25 10 26.5 6 30 5.2C33 4.6 35.5 6 37.5 7.6L41.6 9.6C42.6 10.2 42.4 11.6 41.2 11.8C38.5 12.2 35.5 13 33.5 14.2C32.6 15.6 32.8 17.5 33.3 19.5C34 22 34.6 24 34.6 26C34.8 32 35.6 38 35.4 43C35.3 46.5 34.5 49 34.6 51C36.5 51.5 37.6 53.4 37 55.4C39.5 56 42.5 56.4 43.6 57.6C43.8 58.6 42.6 59 41 59L30 59C25 59.2 18 59.6 10 60.4C16 58.6 22 57.4 25.4 56C23.6 53.4 23.2 49.5 23.6 46C24 38 24.4 30 25 24C25.4 19.5 26.2 16 26.5 13Z' fill='%231E2C4A'/%3E%3Cpath d='M32.8 22.4C35.6 23.4 37.5 25.2 37.6 27.6C37.7 29 37.3 30.3 36.4 31.2' fill='none' stroke='%231E2C4A' stroke-width='2.6' stroke-linecap='round'/%3E%3Ccircle cx='35.4' cy='8.7' r='1.15' fill='%23F6C266'/%3E%3C/g%3E%3Cpath d='M-2 53C10 46.5 24 45 34 46.4C46 48.2 56 50.8 66 55L66 66L-2 66Z' fill='%231E2C4A'/%3E%3C/g%3E%3Ccircle cx='32' cy='32' r='30.6' fill='none' stroke='%231E2C4A' stroke-width='2'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -264,6 +264,60 @@
   @media (hover:none), (pointer:coarse){ .hint .mouse{ display:none; } .hint .touch{ display:inline; } }
   @media (hover:hover){ .screen, .lens{ cursor:none; } }
 
+  /* ---------- clues collected + attack path ---------- */
+  .collect{ margin-top:14px; }
+  .tray{ list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:8px; min-height:30px; }
+  .tray li{
+    display:inline-flex; align-items:center; gap:7px;
+    padding:5px 11px 5px 7px; border-radius:999px;
+    background:#FFFFFF; border:2px solid var(--navy); color:var(--navy);
+    font-weight:800; font-size:.82rem; white-space:nowrap;
+    animation: chip .4s cubic-bezier(.3,1.6,.5,1) both;
+  }
+  .tray li i{
+    width:18px; height:18px; border-radius:50%; flex:none;
+    display:grid; place-items:center; font-style:normal; font-size:.72rem;
+    background:var(--navy); color:var(--paper);
+  }
+  .plan{
+    position:absolute; left:50%; top:20%; transform:translate(-50%, -50%) rotate(-1deg);
+    width:min(66%, 440px); z-index:5; pointer-events:none;
+    background:#FFFDF5; color:var(--navy);
+    border:2px solid var(--navy); border-radius:12px;
+    box-shadow:0 18px 38px -10px rgba(30,44,74,.55);
+    padding:14px 16px 15px;
+    animation: planpop .5s cubic-bezier(.3,1.4,.5,1) both;
+  }
+  .plan::before{
+    content:""; position:absolute; left:50%; top:-9px; transform:translateX(-50%);
+    width:16px; height:16px; border-radius:50%;
+    background:radial-gradient(circle at 38% 32%, #ff7a7a, #b5241c);
+    box-shadow:0 2px 4px rgba(0,0,0,.4), inset 0 -2px 3px rgba(0,0,0,.25);
+  }
+  .plan h3{ margin:0 0 8px; font-size:15px; font-weight:800; }
+  .plan ol{ margin:0; padding:0; list-style:none; display:grid; gap:7px; }
+  .plan li{
+    display:grid; grid-template-columns:20px 1fr; gap:9px; align-items:start;
+    font-weight:600; font-size:11.5px; line-height:1.35; color:var(--slate);
+  }
+  .plan li::before{
+    content:attr(data-n);
+    width:20px; height:20px; border-radius:50%; display:grid; place-items:center;
+    background:#C0392B; color:#fff; font-weight:800; font-size:11px;
+  }
+  .flow{ position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none; }
+  .flow .yarn{
+    stroke:#C0392B; stroke-width:2.6; stroke-linecap:round;
+    stroke-dasharray:var(--len); stroke-dashoffset:var(--len);
+    filter:drop-shadow(0 1px 2px rgba(30,44,74,.45));
+    animation: draw .6s ease-out forwards;
+  }
+  .flow .tack{ fill:#C0392B; stroke:#fff; stroke-width:2; opacity:0; animation: tackin .3s ease-out forwards; }
+  @keyframes chip{ from{ opacity:0; transform:scale(.6) translateY(6px); } }
+  @keyframes draw{ to{ stroke-dashoffset:0; } }
+  @keyframes planpop{ from{ opacity:0; transform:translate(-50%, -50%) scale(.82) rotate(-1deg); } }
+  @keyframes tackin{ to{ opacity:1; } }
+
   /* ---------- the made-up bakery, drawn twice: as itself and as a blueprint ---------- */
   .s{ font-family:'DM Serif Display',Georgia,serif; }
   .b{ font-family:'Nunito',sans-serif; }
@@ -361,11 +415,13 @@
           <div class="chrome">
             <span class="dots"><i></i><i></i><i></i></span>
             <span class="url"><svg viewBox="0 0 12 12"><rect x="2" y="5.5" width="8" height="5.5" rx="1.2"/><path d="M4 5.5V4a2 2 0 0 1 4 0v1.5"/></svg>honeycrumb-bakery.example</span>
-            <span class="pips" id="pips" title="Problems found"><i>1</i><i>2</i><i>3</i><i>4</i></span>
+            <span class="pips" id="pips" title="Clues found"></span>
           </div>
           <div class="screen" id="screen">
             <svg id="site" xmlns="http://www.w3.org/2000/svg"></svg>
+            <svg class="flow" id="flow" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
             <div class="pins" id="pins"></div>
+            <div class="plan" id="plan" hidden></div>
           </div>
         </div>
         <div class="layer" id="layer" aria-hidden="true">
@@ -408,16 +464,19 @@
             <div class="note-in">
               <div class="note-tag"><i id="nNum">1</i><span id="nTag">Found</span></div>
               <p class="note-t" id="nTitle"></p>
-              <p class="note-f"><b>How to fix</b><span id="nFix"></span></p>
+              <p class="note-f"><b>How an attacker uses this</b><span id="nFix"></span></p>
             </div>
           </div>
         </div>
       </div>
       <figcaption>
-        <span class="count" id="count">0 of 4 problems found</span>
+        <span class="count" id="count"></span>
         <p class="hint"><span class="mouse">Move your mouse over the bakery's website.</span><span class="touch">Drag the magnifier, or tap the bakery's website.</span> Honeycrumb Bakery is made up for this example.</p>
-        <ul class="sr-only" id="srList"></ul>
       </figcaption>
+      <div class="collect">
+        <ul class="tray" id="tray" aria-label="Clues collected"></ul>
+      </div>
+      <ul class="sr-only" id="srList"></ul>
     </figure>
   </main>
 </div>
@@ -444,16 +503,31 @@
   const demo = $('demo'), stack = $('stack'), win = $('window'), screen = $('screen'), siteSvg = $('site'), bpSvg = $('bp');
   const world = $('world'), marks = $('marks'), pins = $('pins'), layer = $('layer');
   const lens = $('lens'), handle = $('handle'), note = $('note'), noteIn = note.firstElementChild;
+  const flow = $('flow');
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
-  const FINDS = {
-    order: { n: 1, tag: 'Order lookup', title: 'Other customers\' orders show up here, with their names, addresses and phone numbers.', fix: 'Show each order only to the customer who placed it.' },
-    login: { n: 2, tag: 'Staff sign-in', title: 'Nothing stops someone from guessing staff passwords here, again and again.', fix: 'Pause sign-ins after a few wrong tries.' },
-    shop:  { n: 3, tag: 'Shop software', title: 'The online shop runs a 2019 version with a flaw that has been public for years.', fix: 'Update to the current version.' },
-    file:  { n: 4, tag: 'Forgotten file', title: 'A copy of the customer list sits on the site, where anyone can download it.', fix: 'Delete it, and keep backups off the website.' },
+  const CLUES = {
+    dev:     { tag: 'Address bar',   title: 'A copy of the site answers at dev.honeycrumb-bakery.example.', use: 'Test sites rarely get the same locks or the same attention. An attacker practises here first, where nobody is watching.' },
+    backup:  { tag: 'Backup file',   title: 'A file called 2025_backup.zip sits on the site, unlinked but open to anyone.', use: 'Download it. Backups often hold the whole site: code, passwords, and the customer list.' },
+    address: { tag: 'Footer line',   title: 'Every word on this page is a password candidate.', use: 'Attackers try a site\'s own words first: "maplestreet", "honeycrumb1987". One lazy employee password opens the whole site.' },
+    order:   { tag: 'Order lookup',  title: 'Any order number shows that customer\'s name, address and phone number.', use: 'Order numbers count upward. Script the numbers 1 to 1042 and collect every customer\'s details.' },
+    users:   { tag: 'Staff login',   title: 'The sign-in form says so when a username doesn\'t exist.', use: 'Feed it staff names until it stops saying no. Each different answer confirms a real username.' },
+    brute:   { tag: 'Staff login',   title: 'Nothing slows down wrong guesses here: no pause, no lockout.', use: 'Try the ten thousand most common passwords against each confirmed username. One usually works.' },
+    social:  { tag: 'Social links',  title: 'The bakery\'s social accounts name the staff: roster photos, birthday posts, who\'s who.', use: 'Collect the names. Names become usernames, and birthday posts become password guesses.' },
+    shop:    { tag: 'Shop software', title: 'The footer admits the shop runs BakeryCart 2.1, released in 2019.', use: 'Look up the version. Its flaws have been public for years, with ready-made attacks anyone can run.' },
+    hours:   { tag: 'Opening hours', title: 'The footer spells out when the bakery is open, and that it\'s closed on Sundays and holidays.', use: 'It tells the attacker when attention on the site is lowest. Attacks started then run longest before anyone notices.' },
   };
-  const KEYS = Object.keys(FINDS);
+  const KEYS = Object.keys(CLUES);
+  const idx = k => KEYS.indexOf(k);
+  const ATTACK = ['social', 'users', 'brute', 'hours'];
+  const ATTACK_STEPS = [
+    'Read the bakery\'s social feeds and write down every staff name and birthday.',
+    'Turn names into likely usernames and test them on the staff login until the form stops saying no.',
+    'Try likely passwords against identified usernames.',
+    'Start the attack at 6pm on the Saturday of a long weekend so it\'s nearly 60 hours before anyone notices.',
+  ];
+  let planShown = false;
 
   // ---------- drawing helpers ----------
   const rect = (x, y, w, h, r, fill, more = '') => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${fill}" ${more}/>`;
@@ -461,7 +535,6 @@
   const lab = (x, y, s, size, anchor = 'start') => `<text x="${x}" y="${y}" font-size="${size}" class="lab" text-anchor="${anchor}">${s}</text>`;
   const ok = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})" fill="none" stroke="#F6C266" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle r="7" fill="rgba(246,194,102,.12)"/><path d="M-3.4 .2l2.4 2.5 4.4-5"/></g>`;
   const flawBox = ([x, y, w, h]) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="rgba(227,154,45,.16)" stroke="#F6C266" stroke-width="2" stroke-dasharray="7 5"/>`;
-  const fileIcon = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})" fill="none" stroke="#F6C266" stroke-width="2" stroke-linejoin="round"><path d="M0 0h28l12 12v40H0z" fill="rgba(246,194,102,.14)" stroke-dasharray="5 4"/><path d="M28 0v12h12"/><path d="M8 24h24M8 32h24M8 40h16" stroke-width="1.6"/></g>`;
   const C = { bg: '#FFF9F1', ink: '#2E2118', soft: '#6B5848', mute: '#8A7663', teal: '#3D7068', line: '#EADBC4', field: '#DCCBB2' };
 
   const bunLogo = (x, y, k) => `<g transform="translate(${x} ${y}) scale(${k})"><circle r="15" fill="#E2A65E" stroke="#AE6E35" stroke-width="2"/><path d="M-8 -3q8-6 16 0M-9 4q9-6 18 0" stroke="#FFF2DA" stroke-width="2.5" fill="none" stroke-linecap="round"/></g>`;
@@ -519,12 +592,17 @@
     wide: {
       W: 1200, H: 720, pad: 230, mag: 1.45,
       finds: {
-        order: { at: [172, 567], pin: [272, 542], box: [62, 534, 220, 66] },
-        login: { at: [600, 584], pin: [746, 560], box: [446, 554, 308, 60] },
-        shop:  { at: [1072, 698], pin: [1166, 688], box: [984, 684, 176, 24] },
-        file:  { at: [1120, 152], pin: [1158, 104], box: [1042, 98, 156, 116] },
+        dev:     { at: [360, -40],  pin: [360, 16],   box: [250, -60, 330, 40] },
+        backup:  { at: [840, -40],  pin: [840, 16],   box: [660, -60, 360, 40] },
+        address: { at: [330, 338],  pin: [430, 320],  box: [226, 326, 232, 24] },
+        order:   { at: [172, 567],  pin: [272, 542],  box: [62, 534, 220, 66] },
+        users:   { at: [600, 536],  pin: [500, 512],  box: [446, 508, 308, 40] },
+        brute:   { at: [600, 592],  pin: [746, 566],  box: [446, 560, 308, 54] },
+        social:  { at: [206, 438],  pin: [256, 428],  box: [150, 426, 120, 26] },
+        shop:    { at: [1072, 698], pin: [1166, 688], box: [984, 684, 176, 24] },
+        hours:   { at: [260, 703],  pin: [320, 690],  box: [40, 686, 560, 28] },
       },
-      tour: [['order', 3.2], [[250, 404], .9], ['login', 3.2], [[960, 568], 1.1], ['shop', 3.2], [[880, 236], .9], ['file', 3.2], [[770, 40], .9]],
+      tour: [['social', 2.6], ['users', 2.4], ['brute', 2.4], ['hours', 2.4], ['address', 2.4], ['order', 2.4], ['dev', 2.6], ['backup', 2.4], ['shop', 2.4]],
       art() {
         const card = (x, title) => rect(x, 464, 336, 196, 18, C.ink, 'class="shade" opacity=".07" transform="translate(0 5)"') + rect(x, 460, 336, 196, 18, '#FFFFFF', `stroke="${C.line}" stroke-width="2"`) + txt(x + 24, 500, title, 24, C.ink, 's');
         return `
@@ -545,6 +623,8 @@
           ${txt(163, 409, 'Order for pickup', 16, '#FFFFFF', 'b', 'font-weight="800" text-anchor="middle"')}
           ${rect(278, 378, 154, 50, 25, 'none', `stroke="${C.teal}" stroke-width="2.5"`)}
           ${txt(355, 409, 'See the menu', 16, C.teal, 'b', 'font-weight="800" text-anchor="middle"')}
+          ${txt(64, 442, 'Follow us', 14, C.soft, 'b', 'font-weight="800"')}
+          ${[['f', 170], ['X', 206], ['@', 242]].map(([c, x]) => `<circle cx="${x}" cy="437" r="12" fill="${C.teal}"/>` + txt(x, 442, c, 13, '#FFFFFF', 'b', 'font-weight="900" text-anchor="middle"')).join('')}
           <g transform="translate(880 262)">${breads()}</g>
           ${card(48, 'Track your order')}
           ${txt(72, 532, 'Order number', 13, C.mute, 'b', 'font-weight="700"')}
@@ -568,26 +648,26 @@
           ${rect(840, 604, 124, 40, 10, C.teal)}
           ${txt(902, 629, 'Subscribe', 14, '#FFFFFF', 'b', 'font-weight="800" text-anchor="middle"')}
           ${rect(0, 676, 1200, 44, 0, C.ink)}
-          ${txt(48, 703, 'Open daily 7 am – 6 pm · 14 Maple Street', 14, '#F3E4CC', 'b', 'font-weight="600"')}
+          ${txt(48, 703, 'Open Mon–Sat 7 am – 6 pm · Closed Sundays & holidays · 14 Maple Street', 13, '#F3E4CC', 'b', 'font-weight="600"')}
           ${txt(1152, 703, 'Powered by BakeryCart 2.1', 12, 'rgba(243,228,204,.6)', 'b', 'font-weight="600" text-anchor="end"')}`;
       },
       notes(f) {
         const s = 12;
         return `
-          <path d="M0 -34H1200M0 -42v16M1200 -42v16" stroke="rgba(236,226,200,.5)" stroke-width="1.2"/>
-          ${lab(600, -44, '1200', s, 'middle')}
+          <path d="M0 -96H1200M0 -104v16M1200 -104v16" stroke="rgba(236,226,200,.5)" stroke-width="1.2"/>
+          ${lab(600, -112, '1200', s, 'middle')}
           <path d="M-34 0V720M-42 0h16M-42 720h16" stroke="rgba(236,226,200,.5)" stroke-width="1.2"/>
           ${lab(-48, 360, '720', s, 'end')}
-          ${lab(640, 22, 'navigation · 5 links', s)}${ok(796, 18, 1)}
+          <rect x="300" y="-60" width="600" height="40" rx="20" fill="none" stroke="rgba(236,226,200,.6)" stroke-width="1.6"/>
+          ${lab(600, -35, 'honeycrumb-bakery.example', 13, 'middle')}
+          ${lab(360, -72, 'dev. subdomain reachable', s, 'middle')}
+          ${lab(840, -72, '/2025_backup.zip', s, 'middle')}
           ${lab(64, 370, 'buttons', s)}${ok(130, 366, 1)}
           ${lab(722, 92, 'photo', s)}${ok(772, 88, 1)}
           ${lab(48, 452, 'order lookup form', s)}
           ${lab(432, 452, 'staff sign-in form', s)}
-          ${lab(816, 452, 'email sign-up form', s)}${ok(970, 448, 1)}
-          ${lab(1152, 670, 'shop software: BakeryCart 2.1, from 2019', s, 'end')}
-          ${fileIcon(1100, 112, 1)}
-          ${lab(1120, 186, 'customers-backup.zip', s, 'middle')}
-          ${lab(1120, 202, 'not linked, still public', s, 'middle')}
+          ${lab(816, 452, 'email sign-up form', s)}
+          ${lab(1152, 668, 'shop software: BakeryCart 2.1, from 2019', s, 'end')}
           <g transform="translate(1236 548)">
             <rect width="176" height="112" fill="none" stroke="rgba(236,226,200,.55)" stroke-width="1.4"/>
             <path d="M0 40H176M0 76H176" stroke="rgba(236,226,200,.4)" stroke-width="1"/>
@@ -597,18 +677,23 @@
       },
     },
     narrow: {
-      W: 400, H: 700, pad: 130, mag: 1.5,
+      W: 400, H: 980, pad: 130, mag: 1.5,
       finds: {
-        order: { at: [150, 395], pin: [262, 372], box: [30, 368, 242, 54] },
-        login: { at: [200, 568], pin: [362, 548], box: [30, 544, 340, 48] },
-        shop:  { at: [86, 685], pin: [164, 680], box: [14, 676, 146, 18] },
-        file:  { at: [318, 246], pin: [338, 216], box: [262, 214, 112, 76] },
+        dev:     { at: [120, -24], pin: [120, 10],  box: [50, -44, 140, 28] },
+        backup:  { at: [300, -24], pin: [300, 10],  box: [210, -44, 160, 28] },
+        address: { at: [150, 246], pin: [250, 232], box: [18, 236, 304, 18] },
+        order:   { at: [150, 443], pin: [262, 424], box: [30, 414, 236, 50] },
+        users:   { at: [200, 574], pin: [344, 558], box: [30, 548, 332, 36] },
+        brute:   { at: [200, 626], pin: [344, 610], box: [30, 596, 332, 54] },
+        social:  { at: [152, 320], pin: [210, 308], box: [30, 306, 190, 30] },
+        shop:    { at: [120, 944], pin: [200, 938], box: [16, 934, 224, 18] },
+        hours:   { at: [150, 920], pin: [250, 910], box: [14, 908, 320, 18] },
       },
-      tour: [['order', 3.2], [[95, 282], .9], ['file', 3.2], [[300, 140], .9], ['login', 3.2], ['shop', 3.2], [[210, 30], .9]],
+      tour: [['social', 2.6], ['users', 2.4], ['brute', 2.4], ['hours', 2.4], ['address', 2.4], ['order', 2.4], ['dev', 2.6], ['backup', 2.4], ['shop', 2.4]],
       art() {
         const card = (y, h, title) => rect(16, y + 4, 368, h, 16, C.ink, 'class="shade" opacity=".07"') + rect(16, y, 368, h, 16, '#FFFFFF', `stroke="${C.line}" stroke-width="2"`) + txt(36, y + 34, title, 20, C.ink, 's');
         return `
-          ${rect(0, 0, 400, 700, 0, C.bg, 'class="bg"')}
+          ${rect(0, 0, 400, 980, 0, C.bg, 'class="bg"')}
           <path d="M0 60H400" stroke="${C.line}" stroke-width="2"/>
           ${bunLogo(34, 30, .8)}
           ${txt(54, 38, 'Honeycrumb', 22, C.ink, 's')}
@@ -617,41 +702,50 @@
           ${txt(19, 134, 'Fresh from', 30, C.ink, 's')}
           ${txt(19, 168, 'the oven,', 30, C.ink, 's')}
           ${txt(19, 202, 'every morning.', 30, C.ink, 's')}
-          ${txt(20, 230, 'Sourdough, croissants and', 13, C.soft, 'b', 'font-weight="600"')}
-          ${txt(20, 248, 'cinnamon buns since 1987.', 13, C.soft, 'b', 'font-weight="600"')}
-          ${rect(20, 262, 150, 40, 20, C.teal)}
-          ${txt(95, 287, 'Order for pickup', 13, '#FFFFFF', 'b', 'font-weight="800" text-anchor="middle"')}
-          <g transform="translate(300 142) scale(.44)">${breads()}</g>
-          ${card(312, 136, 'Track your order')}
-          ${txt(36, 366, 'Order number', 11, C.mute, 'b', 'font-weight="700"')}
-          ${rect(36, 374, 230, 42, 9, '#FFFFFF', `stroke="${C.field}" stroke-width="1.5"`)}
-          ${txt(50, 401, '1042', 15, C.ink, 'b', 'font-weight="700"')}
-          ${rect(278, 374, 86, 42, 9, C.teal)}
-          ${txt(321, 401, 'Track', 14, '#FFFFFF', 'b', 'font-weight="800" text-anchor="middle"')}
-          ${card(462, 174, 'Staff login')}
-          ${rect(36, 506, 328, 36, 9, '#FFFFFF', `stroke="${C.field}" stroke-width="1.5"`)}
-          ${txt(50, 529, 'Username', 13, '#A8957F', 'b', 'font-weight="600"')}
-          ${rect(36, 550, 328, 36, 9, '#FFFFFF', `stroke="${C.field}" stroke-width="1.5"`)}
-          ${txt(50, 574, '••••••••', 16, C.ink, 'b', 'font-weight="800"')}
-          ${rect(36, 596, 100, 30, 9, C.ink)}
-          ${txt(86, 616, 'Sign in', 13, '#FFFFFF', 'b', 'font-weight="800" text-anchor="middle"')}
-          ${rect(0, 652, 400, 48, 0, C.ink)}
-          ${txt(20, 671, 'Open daily 7 am – 6 pm · 14 Maple St', 11, '#F3E4CC', 'b', 'font-weight="600"')}
-          ${txt(20, 689, 'Powered by BakeryCart 2.1', 10, 'rgba(243,228,204,.6)', 'b', 'font-weight="600"')}`;
+          ${txt(20, 228, 'Sourdough, croissants and', 13, C.soft, 'b', 'font-weight="600"')}
+          ${txt(20, 246, 'baked on Maple Street since 1987.', 13, C.soft, 'b', 'font-weight="600"')}
+          ${rect(20, 264, 150, 40, 20, C.teal)}
+          ${txt(95, 289, 'Order for pickup', 13, '#FFFFFF', 'b', 'font-weight="800" text-anchor="middle"')}
+          ${txt(20, 326, 'Follow us', 13, C.soft, 'b', 'font-weight="800"')}
+          ${[['f', 120], ['X', 152], ['@', 184]].map(([c, x]) => `<circle cx="${x}" cy="320" r="11" fill="${C.teal}"/>` + txt(x, 325, c, 12, '#FFFFFF', 'b', 'font-weight="900" text-anchor="middle"')).join('')}
+          <g transform="translate(316 150) scale(.4)">${breads()}</g>
+          ${card(360, 136, 'Track your order')}
+          ${txt(36, 414, 'Order number', 11, C.mute, 'b', 'font-weight="700"')}
+          ${rect(36, 422, 230, 42, 9, '#FFFFFF', `stroke="${C.field}" stroke-width="1.5"`)}
+          ${txt(50, 449, '1042', 15, C.ink, 'b', 'font-weight="700"')}
+          ${rect(278, 422, 86, 42, 9, C.teal)}
+          ${txt(321, 449, 'Track', 14, '#FFFFFF', 'b', 'font-weight="800" text-anchor="middle"')}
+          ${card(512, 176, 'Staff login')}
+          ${rect(36, 556, 328, 36, 9, '#FFFFFF', `stroke="${C.field}" stroke-width="1.5"`)}
+          ${txt(50, 579, 'Username', 13, '#A8957F', 'b', 'font-weight="600"')}
+          ${rect(36, 600, 328, 36, 9, '#FFFFFF', `stroke="${C.field}" stroke-width="1.5"`)}
+          ${txt(50, 624, '••••••••', 16, C.ink, 'b', 'font-weight="800"')}
+          ${rect(36, 646, 100, 30, 9, C.ink)}
+          ${txt(86, 666, 'Sign in', 13, '#FFFFFF', 'b', 'font-weight="800" text-anchor="middle"')}
+          ${card(704, 150, 'Fresh news by email')}
+          ${txt(36, 762, 'One email a week. New bakes, no spam.', 12, C.mute, 'b', 'font-weight="600"')}
+          ${rect(36, 772, 328, 38, 9, '#FFFFFF', `stroke="${C.field}" stroke-width="1.5"`)}
+          ${txt(50, 796, 'you@example.com', 13, '#A8957F', 'b', 'font-weight="600"')}
+          ${rect(36, 816, 120, 34, 9, C.teal)}
+          ${txt(96, 838, 'Subscribe', 13, '#FFFFFF', 'b', 'font-weight="800" text-anchor="middle"')}
+          ${rect(0, 892, 400, 88, 0, C.ink)}
+          ${txt(20, 920, 'Mon–Sat 7 am – 6 pm · closed Sun & holidays', 11, '#F3E4CC', 'b', 'font-weight="600"')}
+          ${txt(20, 944, '14 Maple St · Powered by BakeryCart 2.1', 10, 'rgba(243,228,204,.6)', 'b', 'font-weight="600"')}`;
       },
       notes(f) {
         const s = 9;
         return `
-          <path d="M0 -26H400M0 -32v12M400 -32v12" stroke="rgba(236,226,200,.5)" stroke-width="1"/>
-          ${lab(200, -34, '400', s, 'middle')}
-          ${lab(342, 35, 'menu', s, 'end')}${ok(334, 48, .7)}
-          ${lab(178, 287, 'button', s)}${ok(222, 284, .7)}
-          ${lab(364, 334, 'order lookup', s, 'end')}
-          ${lab(364, 484, 'staff sign-in', s, 'end')}
-          ${lab(380, 689, 'shop software, 2019', s, 'end')}
-          ${fileIcon(306, 220, .7)}
-          ${lab(318, 272, 'customers-backup.zip', s, 'middle')}
-          ${lab(318, 284, 'not linked, still public', s, 'middle')}
+          <path d="M0 -62H400M0 -68v12M400 -68v12" stroke="rgba(236,226,200,.5)" stroke-width="1"/>
+          ${lab(200, -74, '400', s, 'middle')}
+          <rect x="60" y="-44" width="280" height="28" rx="14" fill="none" stroke="rgba(236,226,200,.6)" stroke-width="1.3"/>
+          ${lab(200, -25, 'honeycrumb-bakery.example', 9, 'middle')}
+          ${lab(120, -52, 'dev. subdomain', 8, 'middle')}
+          ${lab(300, -52, '/2025_backup.zip', 8, 'middle')}
+          ${lab(232, 300, 'social links', s)}
+          ${lab(364, 338, 'order lookup', s, 'end')}
+          ${lab(364, 542, 'staff sign-in', s, 'end')}
+          ${lab(364, 732, 'email sign-up', s, 'end')}
+          ${lab(380, 944, 'shop: BakeryCart 2.1, 2019', s, 'end')}
           ${Object.values(f).map(d => flawBox(d.box)).join('')}`;
       },
     },
@@ -669,6 +763,7 @@
   let readyAt = 0;
   let lastLens = '', lastWorld = '', lastHandle = '';
   const markEls = {}, pinEls = {};
+  $('pips').innerHTML = KEYS.map(() => '<i></i>').join('');
   const pipEls = [...$('pips').children];
 
   const unitsToPx = ([x, y]) => ({ x: x * f, y: y * f });
@@ -687,14 +782,16 @@
       layoutKey = key; L = LAYOUTS[key];
       screen.style.aspectRatio = `${L.W} / ${L.H}`;
       siteSvg.setAttribute('viewBox', `0 0 ${L.W} ${L.H}`);
+      flow.setAttribute('viewBox', `0 0 ${L.W} ${L.H}`);
       siteSvg.innerHTML = `<g class="art">${L.art()}</g>`;
       bpSvg.setAttribute('viewBox', `${-L.pad} ${-L.pad} ${L.W + 2 * L.pad} ${L.H + 2 * L.pad}`);
       bpSvg.innerHTML = `${grid(L.W, L.H, L.pad)}<g class="art">${L.art()}</g>${L.notes(L.finds)}`;
       marks.innerHTML = ''; pins.innerHTML = '';
       for (const k of KEYS) {
-        const mk = document.createElement('div'); mk.className = 'mk'; mk.innerHTML = `<i></i><i></i><b>${FINDS[k].n}</b>`; marks.appendChild(mk); markEls[k] = mk;
-        const pin = document.createElement('div'); pin.className = 'pin' + (found.has(k) ? ' on' : ''); pin.innerHTML = `<span>${FINDS[k].n}</span>`; pins.appendChild(pin); pinEls[k] = pin;
+        const mk = document.createElement('div'); mk.className = 'mk'; mk.innerHTML = `<i></i><i></i><b>${idx(k) + 1}</b>`; marks.appendChild(mk); markEls[k] = mk;
+        const pin = document.createElement('div'); pin.className = 'pin' + (found.has(k) ? ' on' : ''); pin.innerHTML = `<span>${idx(k) + 1}</span>`; pins.appendChild(pin); pinEls[k] = pin;
       }
+      if (planShown) drawBoard();
     }
     fw = screen.clientWidth; f = fw / L.W; fh = L.H * f;
     m = L.mag;
@@ -798,23 +895,50 @@
     }
   }
 
+  function updateCount() {
+    $('count').textContent = found.size === KEYS.length
+      ? `All ${KEYS.length} clues found.`
+      : `${found.size} of ${KEYS.length} clues found`;
+  }
+
+  function drawBoard() {
+    const cx = L.W * .5, cy = L.H * .20;
+    let lines = '', tacks = '';
+    ATTACK.forEach((k, i) => {
+      const p = L.finds[k].pin;
+      const len = Math.hypot(cx - p[0], cy - p[1]);
+      lines += `<line class="yarn" style="--len:${len.toFixed(0)};animation-delay:${(i * .12).toFixed(2)}s" x1="${p[0]}" y1="${p[1]}" x2="${cx}" y2="${cy}"/>`;
+      tacks += `<circle class="tack" cx="${p[0]}" cy="${p[1]}" r="7" style="animation-delay:${(.5 + i * .12).toFixed(2)}s"/>`;
+    });
+    flow.innerHTML = lines + tacks;
+  }
+
+  function revealPlan() {
+    planShown = true;
+    drawBoard();
+    $('plan').innerHTML = `<h3>One possible attack plan</h3><ol>${ATTACK.map((k, i) => `<li data-n="${idx(k) + 1}">${ATTACK_STEPS[i]}</li>`).join('')}</ol>`;
+    $('plan').hidden = false;
+  }
+
   function markFound(k) {
     found.add(k);
     const mk = markEls[k];
     mk.classList.remove('burst'); void mk.offsetWidth; mk.classList.add('burst');
     pinEls[k].classList.add('on');
-    pipEls[FINDS[k].n - 1].classList.add('on');
-    $('count').textContent = found.size === KEYS.length
-      ? 'All 4 found. On a real website, each one comes with a note like these.'
-      : `${found.size} of 4 problems found`;
+    pipEls[idx(k)].classList.add('on');
+    const li = document.createElement('li');
+    li.innerHTML = `<i>${idx(k) + 1}</i>${CLUES[k].tag}`;
+    $('tray').appendChild(li);
+    updateCount();
+    if (!planShown && ATTACK.every(j => found.has(j))) revealPlan();
   }
 
   function showNote(k) {
-    const d = FINDS[k];
-    $('nNum').textContent = d.n;
+    const d = CLUES[k];
+    $('nNum').textContent = idx(k) + 1;
     $('nTag').textContent = d.tag;
     $('nTitle').textContent = d.title;
-    $('nFix').textContent = d.fix;
+    $('nFix').textContent = d.use;
     noteSize = { w: noteIn.offsetWidth, h: noteIn.offsetHeight };
     noteSide = null;
     placeNote();
@@ -901,9 +1025,10 @@
   demo.addEventListener('pointercancel', release);
 
   // ---------- start ----------
-  $('srList').innerHTML = KEYS.map(k => `<li>${FINDS[k].tag}: ${FINDS[k].title} How to fix: ${FINDS[k].fix}</li>`).join('');
+  $('srList').innerHTML = KEYS.map(k => `<li>${CLUES[k].tag}: ${CLUES[k].title} How an attacker uses this: ${CLUES[k].use}</li>`).join('');
   build();
   resetToStart();
+  updateCount();
   const now0 = performance.now();
   readyAt = calm ? 0 : now0 + 1500;
   tour.until = now0 + 1500 + waypoint(0).dwell * 1000;
