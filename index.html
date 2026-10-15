@@ -61,13 +61,18 @@
   .hero{
     display:grid; gap:18px 0;
     grid-template-columns:minmax(0,1fr);
-    grid-template-areas: "demo" "lede" "facts";
+    grid-template-areas: "tagline" "demo" "lede" "facts";
     padding-top:8px;
   }
+  .tagline{ grid-area:tagline; }
   .demo{ grid-area:demo; }
   .lede{ grid-area:lede; }
   .facts{ grid-area:facts; }
 
+  .tagline{
+    margin:0; font-weight:800; font-size:1.3rem; line-height:1.2; color:var(--navy);
+    animation: rise .7s cubic-bezier(.2,.8,.2,1) both;
+  }
   .lede{
     margin:0; max-width:34em;
     font-size:clamp(1.04rem, 1.25vw, 1.2rem); line-height:1.5; font-weight:600; color:var(--slate);
@@ -255,11 +260,13 @@
       align-items:start;
       padding-top:clamp(4px, 2vh, 24px);
     }
+    .tagline{ display:none; }
     .demo{ max-width:max(440px, calc((100svh - 240px) * 1.62)); }
   }
   @media (max-height:540px) and (orientation:landscape){
     .top{ padding:10px 0 6px; }
     .hero{ gap:12px 32px; padding-top:4px; }
+    .tagline{ display:none; }
     .hero{ grid-template-areas: "lede demo" "facts demo"; grid-template-columns:minmax(260px, .8fr) minmax(0, 1.2fr); }
     .lede{ font-size:.95rem; }
     .facts{ display:none; }
@@ -305,6 +312,8 @@
   </header>
 
   <main class="hero">
+    <p class="tagline">See your website the way attackers do.</p>
+
     <p class="lede"><strong>Meerkat Watch</strong> monitors your organization's publicly accessible surfaces: your website, staff portals, and remote access. We work from the outside, the way an attacker would, and only on systems you own and have authorized us to test.</p>
 
     <ul class="facts">
