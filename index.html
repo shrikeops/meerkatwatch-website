@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#F5F6F7">
-<title>Meerkat Watch — coming soon</title>
+<title>Meerkat Watch: coming soon</title>
 <meta name="description" content="Meerkat Watch monitors what the internet can reach of your organization, the way an attacker would, and proves each finding with steps you can re-run. Coming soon.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3CclipPath id='c'%3E%3Ccircle cx='32' cy='32' r='30.2'/%3E%3C/clipPath%3E%3C/defs%3E%3Ccircle cx='32' cy='32' r='31' fill='%23F6C266'/%3E%3Cg clip-path='url(%23c)'%3E%3Ccircle cx='45' cy='25' r='11' fill='%23FBE3A8'/%3E%3Cg transform='translate(5 9) scale(.86)'%3E%3Cpath d='M26.5 13C25 10 26.5 6 30 5.2C33 4.6 35.5 6 37.5 7.6L41.6 9.6C42.6 10.2 42.4 11.6 41.2 11.8C38.5 12.2 35.5 13 33.5 14.2C32.6 15.6 32.8 17.5 33.3 19.5C34 22 34.6 24 34.6 26C34.8 32 35.6 38 35.4 43C35.3 46.5 34.5 49 34.6 51C36.5 51.5 37.6 53.4 37 55.4C39.5 56 42.5 56.4 43.6 57.6C43.8 58.6 42.6 59 41 59L30 59C25 59.2 18 59.6 10 60.4C16 58.6 22 57.4 25.4 56C23.6 53.4 23.2 49.5 23.6 46C24 38 24.4 30 25 24C25.4 19.5 26.2 16 26.5 13Z' fill='%231E2C4A'/%3E%3Cpath d='M32.8 22.4C35.6 23.4 37.5 25.2 37.6 27.6C37.7 29 37.3 30.3 36.4 31.2' fill='none' stroke='%231E2C4A' stroke-width='2.6' stroke-linecap='round'/%3E%3Ccircle cx='35.4' cy='8.7' r='1.15' fill='%23F6C266'/%3E%3C/g%3E%3Cpath d='M-2 53C10 46.5 24 45 34 46.4C46 48.2 56 50.8 66 55L66 66L-2 66Z' fill='%231E2C4A'/%3E%3C/g%3E%3Ccircle cx='32' cy='32' r='30.6' fill='none' stroke='%231E2C4A' stroke-width='2'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -280,7 +280,7 @@
     background:var(--navy); color:var(--paper);
   }
   .plan{
-    position:absolute; left:50%; top:47%; transform:translate(-50%, -50%) rotate(-1deg);
+    position:absolute; left:50%; top:20%; transform:translate(-50%, -50%) rotate(-1deg);
     width:min(66%, 440px); z-index:5; pointer-events:none;
     background:#FFFDF5; color:var(--navy);
     border:2px solid var(--navy); border-radius:12px;
@@ -295,13 +295,13 @@
     box-shadow:0 2px 4px rgba(0,0,0,.4), inset 0 -2px 3px rgba(0,0,0,.25);
   }
   .plan h3{ margin:0 0 8px; font-size:15px; font-weight:800; }
-  .plan ol{ margin:0; padding:0; list-style:none; display:grid; gap:7px; counter-reset:step; }
+  .plan ol{ margin:0; padding:0; list-style:none; display:grid; gap:7px; }
   .plan li{
     display:grid; grid-template-columns:20px 1fr; gap:9px; align-items:start;
     font-weight:600; font-size:11.5px; line-height:1.35; color:var(--slate);
   }
   .plan li::before{
-    counter-increment:step; content:counter(step);
+    content:attr(data-n);
     width:20px; height:20px; border-radius:50%; display:grid; place-items:center;
     background:#C0392B; color:#fff; font-weight:800; font-size:11px;
   }
@@ -507,24 +507,26 @@
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
-  const LIPSUM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.';
-  const LUSE = 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo.';
   const CLUES = {
-    dev:     { tag: 'Address bar', title: LIPSUM, use: LUSE },
-    backup:  { tag: 'Backup file', title: LIPSUM, use: LUSE },
-    address: { tag: 'Footer line', title: LIPSUM, use: LUSE },
-    order:   { tag: 'Order lookup', title: LIPSUM, use: LUSE },
-    users:   { tag: 'Staff login', title: LIPSUM, use: LUSE },
-    brute:   { tag: 'Staff login', title: LIPSUM, use: LUSE },
-    upload:  { tag: 'Newsletter', title: LIPSUM, use: LUSE },
-    social:  { tag: 'Social links', title: LIPSUM, use: LUSE },
-    shop:    { tag: 'Shop software', title: LIPSUM, use: LUSE },
-    hours:   { tag: 'Opening hours', title: LIPSUM, use: LUSE },
+    dev:     { tag: 'Address bar',   title: 'A copy of the site answers at dev.honeycrumb-bakery.example.', use: 'Test sites rarely get the same locks or the same attention. An attacker practises here first, where nobody is watching.' },
+    backup:  { tag: 'Backup file',   title: 'A file called 2025_backup.zip sits on the site, unlinked but open to anyone.', use: 'Download it. Backups often hold the whole site: code, passwords, and the customer list.' },
+    address: { tag: 'Footer line',   title: 'Every word on this page is a password candidate.', use: 'Attackers try a site\'s own words first: "maplestreet", "honeycrumb1987". One lazy employee password opens the whole site.' },
+    order:   { tag: 'Order lookup',  title: 'Any order number shows that customer\'s name, address and phone number.', use: 'Order numbers count upward. Script the numbers 1 to 1042 and collect every customer\'s details.' },
+    users:   { tag: 'Staff login',   title: 'The sign-in form says so when a username doesn\'t exist.', use: 'Feed it staff names until it stops saying no. Each different answer confirms a real username.' },
+    brute:   { tag: 'Staff login',   title: 'Nothing slows down wrong guesses here: no pause, no lockout.', use: 'Try the ten thousand most common passwords against each confirmed username. One usually works.' },
+    social:  { tag: 'Social links',  title: 'The bakery\'s social accounts name the staff: roster photos, birthday posts, who\'s who.', use: 'Collect the names. Names become usernames, and birthday posts become password guesses.' },
+    shop:    { tag: 'Shop software', title: 'The footer admits the shop runs BakeryCart 2.1, released in 2019.', use: 'Look up the version. Its flaws have been public for years, with ready-made attacks anyone can run.' },
+    hours:   { tag: 'Opening hours', title: 'The footer spells out when the bakery is open, and that it\'s closed on Sundays and holidays.', use: 'It tells the attacker when attention on the site is lowest. Attacks started then run longest before anyone notices.' },
   };
   const KEYS = Object.keys(CLUES);
   const idx = k => KEYS.indexOf(k);
   const ATTACK = ['social', 'users', 'brute', 'hours'];
-  const ATTACK_STEPS = ATTACK.map(() => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
+  const ATTACK_STEPS = [
+    'Read the bakery\'s social feeds and write down every staff name and birthday.',
+    'Turn names into likely usernames and test them on the staff login until the form stops saying no.',
+    'Try likely passwords against identified usernames.',
+    'Start the attack at 6pm on the Saturday of a long weekend so it\'s nearly 60 hours before anyone notices.',
+  ];
   let planShown = false;
 
   // ---------- drawing helpers ----------
@@ -596,12 +598,11 @@
         order:   { at: [172, 567],  pin: [272, 542],  box: [62, 534, 220, 66] },
         users:   { at: [600, 536],  pin: [500, 512],  box: [446, 508, 308, 40] },
         brute:   { at: [600, 592],  pin: [746, 566],  box: [446, 560, 308, 54] },
-        upload:  { at: [984, 567],  pin: [1128, 560], box: [840, 538, 288, 58] },
         social:  { at: [206, 438],  pin: [256, 428],  box: [150, 426, 120, 26] },
         shop:    { at: [1072, 698], pin: [1166, 688], box: [984, 684, 176, 24] },
         hours:   { at: [260, 703],  pin: [320, 690],  box: [40, 686, 560, 28] },
       },
-      tour: [['social', 2.6], ['users', 2.4], ['brute', 2.4], ['hours', 2.4], ['address', 2.4], ['order', 2.4], ['upload', 2.4], ['dev', 2.6], ['backup', 2.4], ['shop', 2.4]],
+      tour: [['social', 2.6], ['users', 2.4], ['brute', 2.4], ['hours', 2.4], ['address', 2.4], ['order', 2.4], ['dev', 2.6], ['backup', 2.4], ['shop', 2.4]],
       art() {
         const card = (x, title) => rect(x, 464, 336, 196, 18, C.ink, 'class="shade" opacity=".07" transform="translate(0 5)"') + rect(x, 460, 336, 196, 18, '#FFFFFF', `stroke="${C.line}" stroke-width="2"`) + txt(x + 24, 500, title, 24, C.ink, 's');
         return `
@@ -684,12 +685,11 @@
         order:   { at: [150, 443], pin: [262, 424], box: [30, 414, 236, 50] },
         users:   { at: [200, 574], pin: [344, 558], box: [30, 548, 332, 36] },
         brute:   { at: [200, 626], pin: [344, 610], box: [30, 596, 332, 54] },
-        upload:  { at: [200, 791], pin: [344, 776], box: [30, 766, 332, 46] },
         social:  { at: [152, 320], pin: [210, 308], box: [30, 306, 190, 30] },
         shop:    { at: [120, 944], pin: [200, 938], box: [16, 934, 224, 18] },
         hours:   { at: [150, 920], pin: [250, 910], box: [14, 908, 320, 18] },
       },
-      tour: [['social', 2.6], ['users', 2.4], ['brute', 2.4], ['hours', 2.4], ['address', 2.4], ['order', 2.4], ['upload', 2.4], ['dev', 2.6], ['backup', 2.4], ['shop', 2.4]],
+      tour: [['social', 2.6], ['users', 2.4], ['brute', 2.4], ['hours', 2.4], ['address', 2.4], ['order', 2.4], ['dev', 2.6], ['backup', 2.4], ['shop', 2.4]],
       art() {
         const card = (y, h, title) => rect(16, y + 4, 368, h, 16, C.ink, 'class="shade" opacity=".07"') + rect(16, y, 368, h, 16, '#FFFFFF', `stroke="${C.line}" stroke-width="2"`) + txt(36, y + 34, title, 20, C.ink, 's');
         return `
@@ -902,7 +902,7 @@
   }
 
   function drawBoard() {
-    const cx = L.W * .5, cy = L.H * .47;
+    const cx = L.W * .5, cy = L.H * .20;
     let lines = '', tacks = '';
     ATTACK.forEach((k, i) => {
       const p = L.finds[k].pin;
@@ -916,7 +916,7 @@
   function revealPlan() {
     planShown = true;
     drawBoard();
-    $('plan').innerHTML = `<h3>Lorem ipsum attack plan</h3><ol>${ATTACK_STEPS.map(s => `<li>${s}</li>`).join('')}</ol>`;
+    $('plan').innerHTML = `<h3>One possible attack plan</h3><ol>${ATTACK.map((k, i) => `<li data-n="${idx(k) + 1}">${ATTACK_STEPS[i]}</li>`).join('')}</ol>`;
     $('plan').hidden = false;
   }
 
