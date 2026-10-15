@@ -53,9 +53,32 @@
     display:inline-flex; align-items:center; gap:8px;
     padding:7px 14px 7px 12px; border-radius:999px;
     background:var(--navy); color:var(--paper);
-    font-weight:800; font-size:.86rem; letter-spacing:.02em; white-space:nowrap;
+    font-family:inherit; font-weight:800; font-size:.86rem; letter-spacing:.02em; white-space:nowrap;
+    border:0; cursor:pointer;
   }
   .pill i{ width:9px; height:9px; border-radius:50%; background:var(--paper); animation: beacon 2.4s ease-out infinite; }
+  .pill:hover{ background:var(--slate); }
+  .pill:focus-visible, .alpha-close:focus-visible{ outline:3px solid var(--amber); outline-offset:2px; }
+
+  /* ---------- alpha popup ---------- */
+  .alpha{
+    width:min(420px, calc(100vw - 32px)); padding:0; border:0; border-radius:18px;
+    background:var(--paper); color:var(--navy);
+    box-shadow:0 24px 60px rgba(30,44,74,.32);
+  }
+  .alpha[open]{ animation: rise .35s cubic-bezier(.2,.8,.2,1) both; }
+  .alpha::backdrop{ background:rgba(30,44,74,.45); }
+  .alpha-in{ padding:24px 24px 20px; }
+  .alpha h2{ margin:0 0 8px; font-weight:800; font-size:1.3rem; line-height:1.2; }
+  .alpha p{ margin:0 0 20px; font-weight:600; line-height:1.5; color:var(--slate); }
+  .alpha a{ color:var(--navy); font-weight:800; text-decoration-color:var(--amber); text-decoration-thickness:2px; text-underline-offset:3px; }
+  .alpha form{ margin:0; text-align:right; }
+  .alpha-close{
+    padding:8px 18px; border:0; border-radius:999px; cursor:pointer;
+    background:var(--navy); color:var(--paper);
+    font-family:inherit; font-weight:800; font-size:.9rem;
+  }
+  .alpha-close:hover{ background:var(--slate); }
 
   /* ---------- hero grid ---------- */
   .hero{
@@ -308,7 +331,7 @@
       <a class="name" href="/" aria-label="Meerkat Watch home">Meerkat <b>Watch</b></a>
       <span class="by">by <a href="https://shrikeops.ca">Shrike Ops</a></span>
     </div>
-    <span class="pill"><i></i>Coming soon</span>
+    <button class="pill" id="joinAlpha" type="button" aria-haspopup="dialog"><i></i>Join free alpha</button>
   </header>
 
   <main class="hero">
@@ -398,6 +421,22 @@
     </figure>
   </main>
 </div>
+
+<dialog class="alpha" id="alpha" aria-labelledby="alphaTitle">
+  <div class="alpha-in">
+    <h2 id="alphaTitle">Free alpha is open</h2>
+    <p>Reach out to join <a href="mailto:info@meerkatwatch.ca">info@meerkatwatch.ca</a></p>
+    <form method="dialog"><button class="alpha-close">Close</button></form>
+  </div>
+</dialog>
+
+<script>
+(() => {
+  const alpha = document.getElementById('alpha');
+  document.getElementById('joinAlpha').addEventListener('click', () => alpha.showModal());
+  alpha.addEventListener('click', e => { if (e.target === alpha) alpha.close(); });
+})();
+</script>
 
 <script>
 (() => {
